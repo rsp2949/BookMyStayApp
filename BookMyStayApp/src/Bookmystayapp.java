@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * ============================================================
  * ABSTRACT CLASS - Room
@@ -5,11 +8,8 @@
  *
  * Use Case 2: Basic Room Types & Static Availability
  *
- * This abstract class represents a generic hotel room.
- *
  * @version 2.1
  */
-
 abstract class Room {
 
     protected int numberOfBeds;
@@ -31,11 +31,8 @@ abstract class Room {
 
 
 /**
- * ============================================================
  * CLASS - SingleRoom
- * ============================================================
  */
-
 class SingleRoom extends Room {
 
     public SingleRoom() {
@@ -45,11 +42,8 @@ class SingleRoom extends Room {
 
 
 /**
- * ============================================================
  * CLASS - DoubleRoom
- * ============================================================
  */
-
 class DoubleRoom extends Room {
 
     public DoubleRoom() {
@@ -59,11 +53,8 @@ class DoubleRoom extends Room {
 
 
 /**
- * ============================================================
  * CLASS - SuiteRoom
- * ============================================================
  */
-
 class SuiteRoom extends Room {
 
     public SuiteRoom() {
@@ -74,39 +65,73 @@ class SuiteRoom extends Room {
 
 /**
  * ============================================================
+ * CLASS - RoomInventory
+ * ============================================================
+ *
+ * Use Case 3: Centralized Room Inventory Management
+ *
+ * @version 3.1
+ */
+class RoomInventory {
+
+    private Map<String, Integer> roomAvailability;
+
+    public RoomInventory() {
+        roomAvailability = new HashMap<>();
+        initializeInventory();
+    }
+
+    private void initializeInventory() {
+
+        roomAvailability.put("Single", 5);
+        roomAvailability.put("Double", 3);
+        roomAvailability.put("Suite", 2);
+
+    }
+
+    public Map<String, Integer> getRoomAvailability() {
+        return roomAvailability;
+    }
+
+    public void updateAvailability(String roomType, int count) {
+        roomAvailability.put(roomType, count);
+    }
+
+}
+
+
+/**
+ * ============================================================
  * MAIN CLASS
  * ============================================================
  *
- * Use Case 2: Room Initialization
+ * Use Case 3: Inventory Setup
  *
- * @version 2.1
+ * @version 3.1
  */
-
 public class Bookmystayapp {
 
     public static void main(String[] args) {
 
-        System.out.println("Hotel Room Initialization\n");
+        System.out.println("Hotel Room Inventory Status\n");
 
         Room singleRoom = new SingleRoom();
         Room doubleRoom = new DoubleRoom();
         Room suiteRoom = new SuiteRoom();
 
-        int singleAvailability = 5;
-        int doubleAvailability = 3;
-        int suiteAvailability = 2;
+        RoomInventory inventory = new RoomInventory();
 
         System.out.println("Single Room:");
         singleRoom.displayRoomDetails();
-        System.out.println("Available: " + singleAvailability);
+        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Single"));
 
         System.out.println("\nDouble Room:");
         doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailability);
+        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Double"));
 
         System.out.println("\nSuite Room:");
         suiteRoom.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailability);
+        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Suite"));
 
     }
 }
