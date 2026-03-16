@@ -5,11 +5,8 @@ import java.util.Map;
  * ============================================================
  * ABSTRACT CLASS - Room
  * ============================================================
- *
- * Use Case 2: Basic Room Types & Static Availability
- *
- * @version 2.1
  */
+
 abstract class Room {
 
     protected int numberOfBeds;
@@ -67,11 +64,8 @@ class SuiteRoom extends Room {
  * ============================================================
  * CLASS - RoomInventory
  * ============================================================
- *
- * Use Case 3: Centralized Room Inventory Management
- *
- * @version 3.1
  */
+
 class RoomInventory {
 
     private Map<String, Integer> roomAvailability;
@@ -102,18 +96,62 @@ class RoomInventory {
 
 /**
  * ============================================================
+ * CLASS - RoomSearchService
+ * ============================================================
+ *
+ * Use Case 4: Room Search & Availability Check
+ *
+ * @version 4.0
+ */
+
+class RoomSearchService {
+
+    public void searchAvailableRooms(
+            RoomInventory inventory,
+            Room singleRoom,
+            Room doubleRoom,
+            Room suiteRoom) {
+
+        Map<String, Integer> availability = inventory.getRoomAvailability();
+
+        if (availability.get("Single") > 0) {
+            System.out.println("Single Room:");
+            singleRoom.displayRoomDetails();
+            System.out.println("Available: " + availability.get("Single"));
+            System.out.println();
+        }
+
+        if (availability.get("Double") > 0) {
+            System.out.println("Double Room:");
+            doubleRoom.displayRoomDetails();
+            System.out.println("Available: " + availability.get("Double"));
+            System.out.println();
+        }
+
+        if (availability.get("Suite") > 0) {
+            System.out.println("Suite Room:");
+            suiteRoom.displayRoomDetails();
+            System.out.println("Available: " + availability.get("Suite"));
+            System.out.println();
+        }
+
+    }
+}
+
+
+/**
+ * ============================================================
  * MAIN CLASS
  * ============================================================
  *
- * Use Case 3: Inventory Setup
- *
- * @version 3.1
+ * Use Case 4: Room Search
  */
+
 public class Bookmystayapp {
 
     public static void main(String[] args) {
 
-        System.out.println("Hotel Room Inventory Status\n");
+        System.out.println("Room Search\n");
 
         Room singleRoom = new SingleRoom();
         Room doubleRoom = new DoubleRoom();
@@ -121,17 +159,14 @@ public class Bookmystayapp {
 
         RoomInventory inventory = new RoomInventory();
 
-        System.out.println("Single Room:");
-        singleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Single"));
+        RoomSearchService searchService = new RoomSearchService();
 
-        System.out.println("\nDouble Room:");
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Double"));
-
-        System.out.println("\nSuite Room:");
-        suiteRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getRoomAvailability().get("Suite"));
+        searchService.searchAvailableRooms(
+                inventory,
+                singleRoom,
+                doubleRoom,
+                suiteRoom
+        );
 
     }
 }
