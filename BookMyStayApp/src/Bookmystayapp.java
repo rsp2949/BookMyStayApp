@@ -1,11 +1,11 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
+import java.util.LinkedList;
 
-/**
- * ============================================================
- * ABSTRACT CLASS - Room
- * ============================================================
- */
+/* ============================================================
+   ABSTRACT CLASS - Room
+   ============================================================ */
 
 abstract class Room {
 
@@ -27,44 +27,32 @@ abstract class Room {
 }
 
 
-/**
- * CLASS - SingleRoom
- */
-class SingleRoom extends Room {
+/* ============================================================
+   ROOM TYPES
+   ============================================================ */
 
+class SingleRoom extends Room {
     public SingleRoom() {
         super(1, 250, 1500.0);
     }
 }
 
-
-/**
- * CLASS - DoubleRoom
- */
 class DoubleRoom extends Room {
-
     public DoubleRoom() {
         super(2, 400, 2500.0);
     }
 }
 
-
-/**
- * CLASS - SuiteRoom
- */
 class SuiteRoom extends Room {
-
     public SuiteRoom() {
         super(3, 750, 5000.0);
     }
 }
 
 
-/**
- * ============================================================
- * CLASS - RoomInventory
- * ============================================================
- */
+/* ============================================================
+   CLASS - RoomInventory
+   ============================================================ */
 
 class RoomInventory {
 
@@ -76,11 +64,9 @@ class RoomInventory {
     }
 
     private void initializeInventory() {
-
         roomAvailability.put("Single", 5);
         roomAvailability.put("Double", 3);
         roomAvailability.put("Suite", 2);
-
     }
 
     public Map<String, Integer> getRoomAvailability() {
@@ -90,19 +76,12 @@ class RoomInventory {
     public void updateAvailability(String roomType, int count) {
         roomAvailability.put(roomType, count);
     }
-
 }
 
 
-/**
- * ============================================================
- * CLASS - RoomSearchService
- * ============================================================
- *
- * Use Case 4: Room Search & Availability Check
- *
- * @version 4.0
- */
+/* ============================================================
+   CLASS - RoomSearchService
+   ============================================================ */
 
 class RoomSearchService {
 
@@ -134,39 +113,90 @@ class RoomSearchService {
             System.out.println("Available: " + availability.get("Suite"));
             System.out.println();
         }
-
     }
 }
 
 
-/**
- * ============================================================
- * MAIN CLASS
- * ============================================================
- *
- * Use Case 4: Room Search
- */
+/* ============================================================
+   CLASS - Reservation
+   ============================================================ */
+
+class Reservation {
+
+    private String guestName;
+    private String roomType;
+
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+}
+
+
+/* ============================================================
+   CLASS - BookingRequestQueue
+   ============================================================ */
+
+class BookingRequestQueue {
+
+    private Queue<Reservation> requestQueue;
+
+    public BookingRequestQueue() {
+        requestQueue = new LinkedList<>();
+    }
+
+    public void addRequest(Reservation reservation) {
+        requestQueue.offer(reservation);
+    }
+
+    public Reservation getNextRequest() {
+        return requestQueue.poll();
+    }
+
+    public boolean hasPendingRequests() {
+        return !requestQueue.isEmpty();
+    }
+}
+
+
+/* ============================================================
+   MAIN CLASS
+   ============================================================ */
 
 public class Bookmystayapp {
 
     public static void main(String[] args) {
 
-        System.out.println("Room Search\n");
+        System.out.println("Booking Request Queue");
 
-        Room singleRoom = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suiteRoom = new SuiteRoom();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        RoomInventory inventory = new RoomInventory();
+        Reservation r1 = new Reservation("Abhi", "Single");
+        Reservation r2 = new Reservation("Subha", "Double");
+        Reservation r3 = new Reservation("Vanmathi", "Suite");
 
-        RoomSearchService searchService = new RoomSearchService();
+        bookingQueue.addRequest(r1);
+        bookingQueue.addRequest(r2);
+        bookingQueue.addRequest(r3);
 
-        searchService.searchAvailableRooms(
-                inventory,
-                singleRoom,
-                doubleRoom,
-                suiteRoom
-        );
+        while (bookingQueue.hasPendingRequests()) {
 
+            Reservation request = bookingQueue.getNextRequest();
+
+            System.out.println(
+                    "Processing booking for Guest: "
+                            + request.getGuestName()
+                            + ", Room Type: "
+                            + request.getRoomType()
+            );
+        }
     }
 }
